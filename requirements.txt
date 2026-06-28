@@ -1,0 +1,15 @@
+# Core: JAX + Flax NNX model, optimization, checkpointing.
+# (Install the JAX build matching your accelerator: `pip install -U "jax[cuda12]"`
+#  for an NVIDIA GPU, or plain `jax` for CPU. Versions below are what this repo was
+#  developed/tested against.)
+jax>=0.10.0
+jaxlib>=0.10.0
+flax>=0.12.0
+optax>=0.2.8
+orbax-checkpoint>=0.11.0
+numpy>=2.0
+
+# Data + tokenizer for the code-generation cycle.
+datasets>=3.0          # MBPP download
+tokenizers>=0.22       # byte-level BPE
+tqdm>=4.67
