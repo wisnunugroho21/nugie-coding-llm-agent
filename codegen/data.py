@@ -82,7 +82,7 @@ def iter_mbpp_raw(
     """Yield normalized MBPP examples from the requested split(s)."""
     from datasets import load_dataset
 
-    ds = load_dataset("mbpp", mbpp_config)
+    ds = load_dataset("Muennighoff/mbpp", mbpp_config)
     for split in splits:
         if split not in ds:
             continue
