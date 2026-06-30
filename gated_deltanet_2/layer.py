@@ -75,7 +75,7 @@ class RMSNorm(nnx.Module):
         self.eps = eps
         self.weight = nnx.Param(jnp.ones((dim,)))
 
-    def __call__(self, x):
+    def __call__(self, x: jax.Array) -> jax.Array:
         xf = x.astype(F32)
         rms = jax.lax.rsqrt(jnp.mean(xf * xf, axis=-1, keepdims=True) + self.eps)
         return (xf * rms).astype(x.dtype) * self.weight.value
@@ -101,7 +101,7 @@ class LowRankLinear(nnx.Module):
             rank, out_features, use_bias=use_bias, kernel_init=_XAVIER, rngs=rngs
         )
 
-    def __call__(self, x):
+    def __call__(self, x: jax.Array) -> jax.Array:
         return self.up(self.down(x))
 
 
@@ -141,7 +141,7 @@ class GatedRMSNorm(nnx.Module):
             d_model, gate_rank, inner_dim, use_bias=False, rngs=rngs
         )
 
-    def __call__(self, O_heads, x):
+    def __call__(self, O_heads: jax.Array, x: jax.Array) -> jax.Array:
         """O_heads: [B, L, Hv, dv]   x: [B, L, d_model]  ->  [B, L, Hv*dv]."""
         B, L, Hv, dv = O_heads.shape
         o = O_heads.astype(F32)
@@ -192,10 +192,10 @@ class ShortConv(nnx.Module):
         y = y + self.bias.value[None, :, None]
         return jnp.transpose(y, (0, 2, 1)), new_state  # [B, L, C]
 
-    def __call__(self, x):  # full-sequence (training) path; left context = zeros
+    def __call__(self, x: jax.Array) -> jax.Array:  # full-sequence (training) path; left context = zeros
         return self._apply(x, None)[0]
 
-    def step(self, x, conv_state):  # streaming path; carry the left context in/out
+    def step(self, x: jax.Array, conv_state: jax.Array) -> tuple[jax.Array, jax.Array]:  # streaming path; carry the left context in/out
         return self._apply(x, conv_state)
 
 
