@@ -192,10 +192,14 @@ class ShortConv(nnx.Module):
         y = y + self.bias.value[None, :, None]
         return jnp.transpose(y, (0, 2, 1)), new_state  # [B, L, C]
 
-    def __call__(self, x: jax.Array) -> jax.Array:  # full-sequence (training) path; left context = zeros
+    def __call__(
+        self, x: jax.Array
+    ) -> jax.Array:  # full-sequence (training) path; left context = zeros
         return self._apply(x, None)[0]
 
-    def step(self, x: jax.Array, conv_state: jax.Array) -> tuple[jax.Array, jax.Array]:  # streaming path; carry the left context in/out
+    def step(
+        self, x: jax.Array, conv_state: jax.Array
+    ) -> tuple[jax.Array, jax.Array]:  # streaming path; carry the left context in/out
         return self._apply(x, conv_state)
 
 
